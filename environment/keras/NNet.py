@@ -1,27 +1,14 @@
-import argparse
 import os
-import shutil
 import time
-import random
 import numpy as np
-import math
 import sys
 
-sys.path.append('..')
 from utils import *
 from NeuralNet import NeuralNet
 
-import argparse
-from .TicTacToeNNet import TicTacToeNNet as onnet
+from .ChessNNet import ChessNNet as onnet
 
-"""
-NeuralNet wrapper class for the TicTacToeNNet.
-
-Author: Evgeny Tyurin, github.com/evg-tyurin
-Date: Jan 5, 2018.
-
-Based on (copy-pasted from) the NNet by SourKream and Surag Nair.
-"""
+sys.path.append('..')
 
 args = TrainingConfig({
     'lr': 0.001,
@@ -68,15 +55,15 @@ class NNetWrapper(NeuralNet):
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.h5'):
         filepath = os.path.join(folder, filename)
         if not os.path.exists(folder):
-            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+            print(f"Checkpoint Directory does not exist! Making directory {folder}")
             os.mkdir(folder)
         else:
-            print(f"Checkpoint Directory exists (at '{os.path.abspath(filepath)}')!")
+            print(f"Checkpoint Directory exists (at '{os.path.abspath(filepath)}').")
         self.nnet.model.save_weights(filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.h5'):
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
             print(f"No model in path '{os.path.abspath(filepath)}'!")
-            raise (f"No model in path!")
+            raise Exception("No model in path!")
         self.nnet.model.load_weights(filepath)

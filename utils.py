@@ -1,5 +1,4 @@
 class AverageMeter(object):
-    """From https://github.com/pytorch/examples/blob/master/imagenet/main.py"""
 
     def __init__(self):
         self.val = 0
@@ -17,6 +16,6 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-class dotdict(dict):
+class TrainingConfig(dict):
     def __getattr__(self, name):
         return self[name]

@@ -1,13 +1,14 @@
 *.pyc
-.DS_Store
 
 /temp/
 /.project
 /.pydevproject
 
-# checkpoint
-checkpoints/
+# checkpoints
+jazz/
 
 # For PyCharm users
 .idea/
 
+
+/venv/
