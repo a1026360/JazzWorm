@@ -1,5 +1,4 @@
 import io
-
 import chess
 import numpy as np
 
@@ -36,18 +35,25 @@ int_str_mapping = {
 }
 
 
-def board_to_array(board):
+def board_to_array(board: chess.Board):
+    turn = str(int(board.turn))
+    move_number = str(board.fullmove_number)
+    halfmove_number = str(board.halfmove_clock)
     board = str(board)
     for key in str_int_mapping.keys():
         board = board.replace(key, str(str_int_mapping[key]))
     board = board.replace("\n", ",").replace(" ", ",")
-    board = np.array(board.split(","), dtype=float).reshape((8, 8))
+    board = board + "," + turn + ","
+    board = board + move_number + ","
+    board = board + halfmove_number + ","
+    board = board + "0,0,0,0,0"
+    board = np.array(board.split(","), dtype=float).reshape((9, 8))
     return board
 
 
-def board_to_fen(board, player, turn):
+def board_to_fen(board):
     with io.StringIO() as s:
-        for row in board:
+        for row in board[:-1]:
             empty = 0
             for cell in row:
                 if cell != 0:
@@ -62,9 +68,10 @@ def board_to_fen(board, player, turn):
             s.write('/')
         s.seek(s.tell() - 1)
         s.write(' ')
-        s.write('w' if player else 'b')
-        s.write(' KQkq - 0 ')
-        s.write(str(turn))
+        s.write('w' if board[8, 0] == 1 else 'b')
+        s.write(' - - ')
+        s.write(str(int(board[8, 2])) + ' ')
+        s.write(str(int(board[8, 1])))
         return s.getvalue()
 
 
@@ -2036,3 +2043,8 @@ uci_strings = ["a1h8",
                "h2h1r",
                "h2h1b",
                "h2h1n"]
+
+
+if __name__ == '__main__':
+    b = chess.Board()
+    print(board_to_array(b))

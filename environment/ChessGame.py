@@ -9,32 +9,38 @@ from .ChessLogic import board_to_array, board_to_fen, uci_strings
 
 class ChessGame(Game):
     def __init__(self):
-        self.size = 8
+        self.size = [9, 8]
         self.action_size = 1968
-        self.i = 0
+        self.seen_moves = 0
+        self.seen_results = [0, 0, 0]
 
     def getInitBoard(self):
         board = chess.Board()
         return board_to_array(board)
 
     def getBoardSize(self):
-        return self.size, self.size
+        return self.size
 
     def getActionSize(self):
         return self.action_size
 
-    def getNextState(self, board, player, action):
-        self.i += 1
-        print(f"i = {self.i}")
-        fen = board_to_fen(board, player, 0)
+    def getNextState(self, board_array, player, action):
+        self.seen_moves += 1
+        if self.seen_moves % 200 == 0:
+            print(f"Seen moves / results: {self.seen_moves} / {self.seen_results}")
+        fen = board_to_fen(board_array)
         board = chess.Board(fen)
         if board.is_game_over():
             return board, -player
-        board.push(chess.Move.from_uci(uci_strings[action]))
-        return board_to_array(board), -player
+        try:
+            board.push(chess.Move.from_uci(uci_strings[action]))
+        except AssertionError as ae:
+            raise ae
+        board_array = board_to_array(board)
+        return board_array, -player
 
     def getValidMoves(self, board, player):
-        fen = board_to_fen(board, player, 0)
+        fen = board_to_fen(board)
         board = chess.Board(fen)
         valid_actions = np.zeros(self.action_size)
         for move in board.legal_moves:
@@ -43,17 +49,28 @@ class ChessGame(Game):
 
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
-        # player = 1
-        fen = board_to_fen(board, player, 0)
+        fen = board_to_fen(board)
         board = chess.Board(fen)
-        if board.is_game_over():
-            if not board.is_checkmate():
-                return 1e-4
-            return -player
-        return 0
+        result = board.result()
+        if result[0] == "*":
+            return 0
+        elif result[1] == "/":
+            self.seen_results[2] = self.seen_results[2] + 1
+            return 1e-4  # return a low number for draws
+        elif result[0] == "1":
+            self.seen_results[0] = self.seen_results[0] + 1
+            return 1
+        self.seen_results[1] = self.seen_results[1] + 1
+        return -1
 
     def getCanonicalForm(self, board, player):
         return board
+        # use this code if mirroring is necessary:
+        #if player == 1:
+        #    return board
+        #fen = board_to_fen(board)
+        #board = chess.Board(fen)
+        #return board_to_array(board.mirror())
 
     def getSymmetries(self, board, pi):
         return []
