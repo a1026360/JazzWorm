@@ -17,9 +17,6 @@ class ChessGame(Game):
     def __init__(self):
         self.size = [9, 8]
         self.action_size = 1968
-        self.seen_moves = 0
-        self.highest_move = 0
-        self.seen_results = [0, 0, 0]
 
     def getInitBoard(self):
         board = chess.Board()
@@ -32,13 +29,6 @@ class ChessGame(Game):
         return self.action_size
 
     def getNextState(self, board_array, player, action):
-        self.seen_moves += 1
-        move_number = int(board_array[8, 1])
-        if move_number > self.highest_move:
-            self.highest_move = move_number
-        if self.seen_moves % 200 == 0:
-            log.info(f"highest_move; seen moves / results: "
-                     f"{self.highest_move};\t{self.seen_moves}\t / {self.seen_results}")
         fen = board_to_fen(board_array)
         board = chess.Board(fen)
         if board.is_game_over():
@@ -60,15 +50,13 @@ class ChessGame(Game):
 
     @staticmethod
     def quick_end(board):
+        """Can be used in getGameEnded() to test if the training works."""
         move_number = int(board[8, 1])
         if move_number > 5:
             return 1
         return 0
 
     def getGameEnded(self, board, player):
-        # test quick ending
-        return self.quick_end(board)
-
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         fen = board_to_fen(board)
         board = chess.Board(fen)
@@ -76,12 +64,9 @@ class ChessGame(Game):
         if result[0] == "*":
             return 0
         elif result[1] == "/":
-            self.seen_results[2] = self.seen_results[2] + 1
             return 1e-4  # return a low number for draws
         elif result[0] == "1":
-            self.seen_results[0] = self.seen_results[0] + 1
             return 1
-        self.seen_results[1] = self.seen_results[1] + 1
         return -1
 
     def getCanonicalForm(self, board, player):
@@ -104,4 +89,4 @@ class ChessGame(Game):
     def display(board):
         fen = board_to_fen(board)
         board = chess.Board(fen)
-        print(board + "\n")
+        print(str(board) + "\n")
