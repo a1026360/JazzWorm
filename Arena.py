@@ -2,6 +2,9 @@ import logging
 
 from tqdm import tqdm
 
+from chess import Board
+from environment.ChessLogic import uci_strings, board_to_fen
+
 log = logging.getLogger(__name__)
 
 
@@ -39,8 +42,9 @@ class Arena:
         """
         players = [self.player2, None, self.player1]
         curPlayer = 1
-        board = self.game.getInitBoard()
+        board, chess_board = self.game.getInitBoard()
         it = 0
+        move_strings = ""
         while self.game.getGameEnded(board, curPlayer) == 0:
             it += 1
             if verbose:
@@ -55,12 +59,23 @@ class Arena:
                 log.error(f'Action {action} is not valid!')
                 log.debug(f'valids = {valids}')
                 assert valids[action] > 0
+            uci_move = uci_strings[action]
+            san = chess_board.san(chess_board.parse_san(uci_move))
+            chess_board.push_uci(uci_move)
+            move_strings += str(san) + " "
             board, curPlayer = self.game.getNextState(board, curPlayer, action)
         if verbose:
             assert self.display
             print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, 1)))
             self.display(board)
-        return curPlayer * self.game.getGameEnded(board, curPlayer)
+        reward = curPlayer * self.game.getGameEnded(board, curPlayer)
+        board = Board(board_to_fen(board))
+        print(f"\n[Variant \"From Position\"]\n[FEN \"{self.game.start_fen}\"]")
+        print(f"\n{move_strings}")
+        print(f"reward: {reward}")
+        print(f"{board}\n")
+
+        return reward
 
     def playGames(self, num, verbose=False):
         """

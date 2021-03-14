@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from typing import Any, Tuple
+
 import numpy as np
 
 import chess
@@ -18,9 +20,15 @@ class ChessGame(Game):
         self.size = [9, 8]
         self.action_size = 1968
 
-    def getInitBoard(self):
-        board = chess.Board()
-        return board_to_array(board)
+        # "8/1q3R2/4Q3/1k6/8/8/4RK2/8 w - - 6 4" for CM in 4#
+        # "8/1RR5/4Q3/8/8/3k4/5K2/8 w - - 3 7"
+        # "7k/6pp/P2P2pq/5p2/8/QP2p2p/PP6/K7 w - - 0 1"
+        # "7k/B5pp/P2PN1pq/5p2/2P5/QP1pp1pp/PP6/K7 w - - 0 1"
+        self.start_fen = "7k/6pp/6rq/8/8/QR6/PP6/K7 w - - 0 1"
+
+    def getInitBoard(self) -> Tuple[Any, chess.Board]:
+        board = chess.Board(self.start_fen)
+        return board_to_array(board), board
 
     def getBoardSize(self):
         return self.size
@@ -48,15 +56,12 @@ class ChessGame(Game):
             valid_actions[uci_strings.index(str(move))] = 1
         return valid_actions
 
-    @staticmethod
-    def quick_end(board):
-        """Can be used in getGameEnded() to test if the training works."""
+    def getGameEnded(self, board, player):
+        # test quick end
         move_number = int(board[8, 1])
         if move_number > 5:
-            return 1
-        return 0
+            return 1e-4 * player
 
-    def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         fen = board_to_fen(board)
         board = chess.Board(fen)
@@ -64,19 +69,18 @@ class ChessGame(Game):
         if result[0] == "*":
             return 0
         elif result[1] == "/":
-            return 1e-4  # return a low number for draws
+            return 1e-4 * player  # return a low number for draws
         elif result[0] == "1":
-            return 1
-        return -1
+            return -1 * player
+        return -1 * player
 
     def getCanonicalForm(self, board, player):
         return board
-        # use this code if mirroring is necessary:
-        # if player == 1:
-        #    return board
-        # fen = board_to_fen(board)
-        # board = chess.Board(fen)
-        # return board_to_array(board.mirror())
+        if player == 1:
+            return board
+        fen = board_to_fen(board)
+        board = chess.Board(fen)
+        return board_to_array(board.mirror())
 
     def getSymmetries(self, board, pi):
         return [(board, pi)]
@@ -88,5 +92,4 @@ class ChessGame(Game):
     @staticmethod
     def display(board):
         fen = board_to_fen(board)
-        board = chess.Board(fen)
-        print(str(board) + "\n")
+        print(str(fen) + "\n")
