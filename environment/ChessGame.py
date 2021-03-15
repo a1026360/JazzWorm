@@ -12,6 +12,9 @@ import coloredlogs
 
 log = logging.getLogger(__name__)
 
+fileHandler = logging.FileHandler("training.log")
+log.addHandler(fileHandler)
+
 coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
 
@@ -24,7 +27,11 @@ class ChessGame(Game):
         # "8/1RR5/4Q3/8/8/3k4/5K2/8 w - - 3 7"
         # "7k/6pp/P2P2pq/5p2/8/QP2p2p/PP6/K7 w - - 0 1"
         # "7k/B5pp/P2PN1pq/5p2/2P5/QP1pp1pp/PP6/K7 w - - 0 1"
-        self.start_fen = "7k/6pp/6rq/8/8/QR6/PP6/K7 w - - 0 1"
+        # "7k/6pp/6rq/8/8/QR6/PP6/K7 w - - 0 1"
+        # "8/8/3k4/8/8/4K3/8/4Q3 w - - 0 1"
+        # "6R1/3P4/1K2N2p/7k/8/2r5/rp6/8 w - - 4 46"
+        # self.start_fen = chess.Board().fen()
+        self.start_fen = chess.Board().fen()
 
     def getInitBoard(self) -> Tuple[Any, chess.Board]:
         board = chess.Board(self.start_fen)
@@ -57,30 +64,25 @@ class ChessGame(Game):
         return valid_actions
 
     def getGameEnded(self, board, player):
-        # test quick end
-        move_number = int(board[8, 1])
-        if move_number > 5:
-            return 1e-4 * player
+        #move_number = int(board[8, 1])
 
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         fen = board_to_fen(board)
         board = chess.Board(fen)
-        result = board.result()
+
+        # test quick end
+        #if move_number > 12 and not board.turn:
+        #    return 1
+
+        result = board.result(claim_draw=True)
         if result[0] == "*":
             return 0
         elif result[1] == "/":
-            return 1e-4 * player  # return a low number for draws
-        elif result[0] == "1":
-            return -1 * player
-        return -1 * player
+            return 1e-4  # return a low number for draws
+        return -1
 
     def getCanonicalForm(self, board, player):
         return board
-        if player == 1:
-            return board
-        fen = board_to_fen(board)
-        board = chess.Board(fen)
-        return board_to_array(board.mirror())
 
     def getSymmetries(self, board, pi):
         return [(board, pi)]

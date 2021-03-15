@@ -14,7 +14,7 @@ class RandomPlayer:
         for i, vm in enumerate(valids):
             if vm == 1:
                 valids_array.append(i)
-        a = np.random.randint(len(valids_array) + 1)
+        a = np.random.randint(len(valids_array))
         return valids_array[a]
 
 

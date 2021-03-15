@@ -12,11 +12,11 @@ sys.path.append('..')
 
 args = TrainingConfig({
     'lr': 0.001,
-    'dropout': 0.3,
+    'dropout': 0.1,
     'epochs': 10,
-    'batch_size': 64,
+    'batch_size': 16,
     'cuda': True,
-    'num_channels': 512,
+    'num_channels': 24,
 })
 
 

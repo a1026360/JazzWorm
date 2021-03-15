@@ -39,6 +39,12 @@ def board_to_array(board: chess.Board):
     turn = str(int(board.turn))
     move_number = str(board.fullmove_number)
     halfmove_number = str(board.halfmove_clock)
+
+    can_1castle_ks = str(int(board.has_kingside_castling_rights(True)))
+    can_1castle_qs = str(int(board.has_queenside_castling_rights(True)))
+    can_0castle_ks = str(int(board.has_kingside_castling_rights(False)))
+    can_0castle_qs = str(int(board.has_kingside_castling_rights(False)))
+
     board = str(board)
     for key in str_int_mapping.keys():
         board = board.replace(key, str(str_int_mapping[key]))
@@ -46,7 +52,7 @@ def board_to_array(board: chess.Board):
     board = board + "," + turn + ","
     board = board + move_number + ","
     board = board + halfmove_number + ","
-    board = board + "0,0,0,0,0"
+    board = board + can_1castle_ks + "," + can_1castle_qs + "," + can_0castle_ks + "," + can_0castle_qs + ",0"
     board = np.array(board.split(","), dtype=float).reshape((9, 8))
     return board
 
@@ -68,8 +74,26 @@ def board_to_fen(board):
             s.write('/')
         s.seek(s.tell() - 1)
         s.write(' ')
-        s.write('w' if board[8, 0] == 1 else 'b')
-        s.write(' - - ')
+        s.write('w ' if board[8, 0] == 1 else 'b ')
+        can_1castle_ks = board[8, 3] == 1
+        can_1castle_qs = board[8, 4] == 1
+        can_0castle_ks = board[8, 5] == 1
+        can_0castle_qs = board[8, 6] == 1
+
+        castles = ""
+        if can_1castle_ks:
+            castles += "K"
+        if can_1castle_qs:
+            castles += "Q"
+        if can_0castle_ks:
+            castles += "k"
+        if can_0castle_qs:
+            castles += "q"
+        if castles == "":
+            s.write('- ')
+        else:
+            s.write(castles + ' ')
+        s.write('- ')
         s.write(str(int(board[8, 2])) + ' ')
         s.write(str(int(board[8, 1])))
         return s.getvalue()
