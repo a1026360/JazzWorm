@@ -18,6 +18,24 @@ str_int_mapping = {
     "p": 12,
 }
 
+
+figure_value_mapping = {
+    "K": 10,
+    "Q": 9,
+    "B": 3,
+    "N": 3,
+    "R": 5,
+    "P": 1,
+    ".": 0,
+    "k": -10,
+    "q": -9,
+    "b": -3,
+    "n": -3,
+    "r": -5,
+    "p": -1,
+}
+
+
 pawn_chess_ending_mapping = {
     "Q": 2,
     "B": 3,

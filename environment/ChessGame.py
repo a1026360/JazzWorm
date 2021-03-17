@@ -6,7 +6,7 @@ import numpy as np
 
 import chess
 from Game import Game
-from .ChessLogic import board_to_array, board_to_fen, uci_strings, pawn_chess_ending_mapping
+from .ChessLogic import board_to_array, board_to_fen, uci_strings, pawn_chess_ending_mapping, figure_value_mapping
 import logging
 import coloredlogs
 
@@ -67,21 +67,28 @@ class ChessGame(Game):
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         move_number = int(board[8, 1])
-        if move_number > 100:
-            return 1e-4
-
         fen = board_to_fen(board)
         board = chess.Board(fen)
-        board_str = str(board).replace("\n", "")
-        for key in pawn_chess_ending_mapping.keys():
-            if key in board_str:
-                return -1
+        real_player = 1 if board.turn else -1
 
         result = board.result(claim_draw=True)
         if result[0] == "*":
+            if move_number > 30:
+                str_board = str(board)
+                for key in figure_value_mapping.keys():
+                    str_board = str_board.replace(key, str(figure_value_mapping[key]))
+                str_board = str_board.replace("\n", ",").replace(" ", ",")
+                np_board = np.array(str_board.split(","), dtype=float).flatten()
+                material = sum(np_board)
+                if material == 0:
+                    return 1e-4 * real_player
+                if material > 0:
+                    return 1
+                else:
+                    return -1
             return 0
         elif result[1] == "/":
-            return 1e-4  # return a low number for draws
+            return 1e-4 * real_player # return a low number for draws
         return -1
 
     def getCanonicalForm(self, board, player):

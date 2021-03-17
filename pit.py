@@ -24,7 +24,7 @@ hp = HumanChessPlayer(g).play
 # nnet players
 n1 = NNet(g)
 n1.load_checkpoint('./jazz/', 'checkpoint.h5')
-args1 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 4.0})
+args1 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -38,7 +38,7 @@ elif rnd_vs_nn:
 else:
     n2 = NNet(g)
     n2.load_checkpoint('./jazz/', 'checkpoint.h5')
-    args2 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 4.0})
+    args2 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
     mcts2 = MCTS(g, n2, args2)
     n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
