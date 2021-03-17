@@ -73,22 +73,11 @@ class ChessGame(Game):
 
         result = board.result(claim_draw=True)
         if result[0] == "*":
-            if move_number > 30:
-                str_board = str(board)
-                for key in figure_value_mapping.keys():
-                    str_board = str_board.replace(key, str(figure_value_mapping[key]))
-                str_board = str_board.replace("\n", ",").replace(" ", ",")
-                np_board = np.array(str_board.split(","), dtype=float).flatten()
-                material = sum(np_board)
-                if material == 0:
-                    return 1e-4 * real_player
-                if material > 0:
-                    return 1
-                else:
-                    return -1
+            if move_number > 80:
+                return 1e-4 * real_player
             return 0
         elif result[1] == "/":
-            return 1e-4 * real_player # return a low number for draws
+            return 1e-4 * real_player  # return a low number for draws
         return -1
 
     def getCanonicalForm(self, board, player):

@@ -12,8 +12,8 @@ use this script to play any two agents against each other, or play manually with
 any agent.
 """
 
-human_vs_nn = True
-rnd_vs_nn = False
+human_vs_nn = False
+rnd_vs_nn = True
 
 g = ChessGame()
 
@@ -46,4 +46,4 @@ else:
 
 arena = Arena.Arena(n1p, player2, g, display=ChessGame.display)
 
-print(arena.playGames(4, verbose=False))
+print(arena.playGames(10, verbose=False))
