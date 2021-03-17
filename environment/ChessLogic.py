@@ -18,6 +18,17 @@ str_int_mapping = {
     "p": 12,
 }
 
+pawn_chess_ending_mapping = {
+    "Q": 2,
+    "B": 3,
+    "N": 4,
+    "R": 5,
+    "q": 8,
+    "b": 9,
+    "n": 10,
+    "r": 11,
+}
+
 int_str_mapping = {
     1: "K",
     2: "Q",

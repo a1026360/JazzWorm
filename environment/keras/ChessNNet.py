@@ -26,11 +26,11 @@ class ChessNNet:
             h_conv3)))
         h_conv4_flat = Flatten()(h_conv4)
         s_fc1 = Dropout(args.dropout)(
-            Activation('relu')(BatchNormalization(axis=1)(Dense(512)(Dense(256)(h_conv4_flat)))))
+            Activation('relu')(BatchNormalization(axis=1)(Dense(1024)(h_conv4_flat))))
         s_fc2 = Dropout(args.dropout)(
             Activation('relu')(BatchNormalization(axis=1)(Dense(512)(Dense(256)(s_fc1)))))
         self.pi = Dense(self.action_size, activation='softmax', name='pi')(s_fc2)
-        self.v = Dense(1, activation='relu', name='v')(s_fc2)
+        self.v = Dense(1, activation='tanh', name='v')(s_fc2)
 
         self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
         self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'], optimizer=Adam(args.lr))

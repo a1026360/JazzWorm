@@ -6,7 +6,7 @@ import numpy as np
 
 import chess
 from Game import Game
-from .ChessLogic import board_to_array, board_to_fen, uci_strings
+from .ChessLogic import board_to_array, board_to_fen, uci_strings, pawn_chess_ending_mapping
 import logging
 import coloredlogs
 
@@ -31,6 +31,7 @@ class ChessGame(Game):
         # "8/8/3k4/8/8/4K3/8/4Q3 w - - 0 1"
         # "6R1/3P4/1K2N2p/7k/8/2r5/rp6/8 w - - 4 46"
         # self.start_fen = chess.Board().fen()
+        #self.start_fen = "7k/6pP/pppp2P1/8/8/PPPP2p1/6Pp/7K w - - 0 1"
         self.start_fen = chess.Board().fen()
 
     def getInitBoard(self) -> Tuple[Any, chess.Board]:
@@ -64,15 +65,17 @@ class ChessGame(Game):
         return valid_actions
 
     def getGameEnded(self, board, player):
-        #move_number = int(board[8, 1])
-
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
+        move_number = int(board[8, 1])
+        if move_number > 100:
+            return 1e-4
+
         fen = board_to_fen(board)
         board = chess.Board(fen)
-
-        # test quick end
-        #if move_number > 12 and not board.turn:
-        #    return 1
+        board_str = str(board).replace("\n", "")
+        for key in pawn_chess_ending_mapping.keys():
+            if key in board_str:
+                return -1
 
         result = board.result(claim_draw=True)
         if result[0] == "*":
