@@ -47,7 +47,8 @@ class NNetWrapper(NeuralNet):
         input_boards = np.asarray(input_boards)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs)
+        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs],
+                            batch_size=args.batch_size, epochs=args.epochs, verbose=2)
 
     def predict(self, board):
         """

@@ -11,9 +11,9 @@ from .ChessNNet import ChessNNet as onnet
 sys.path.append('..')
 
 args = TrainingConfig({
-    'lr': 0.001,
+    'lr': 0.002,
     'dropout': 0.2,
-    'epochs': 12,
+    'epochs': 14,
     'batch_size': 64,
     'cuda': True,
     'num_channels': 256,
@@ -34,7 +34,7 @@ class NNetWrapper(NeuralNet):
         input_boards = np.asarray(input_boards)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs, verbose=0)
+        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs, verbose=2)
 
     def predict(self, board):
         """

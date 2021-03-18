@@ -66,15 +66,15 @@ class ChessGame(Game):
 
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
-        move_number = int(board[8, 1])
+        # move_number = int(board[8, 1])
         fen = board_to_fen(board)
         board = chess.Board(fen)
         real_player = 1 if board.turn else -1
 
         result = board.result(claim_draw=True)
         if result[0] == "*":
-            if move_number > 80:
-                return 1e-4 * real_player
+            # if move_number > 200:
+            #    return 1e-4 * real_player
             return 0
         elif result[1] == "/":
             return 1e-4 * real_player  # return a low number for draws

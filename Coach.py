@@ -91,11 +91,12 @@ class Coach():
 
                 # save the iteration examples to the history 
                 self.trainExamplesHistory.append(iterationTrainExamples)
-
-            if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
+            history_len = len(self.trainExamplesHistory)
+            if history_len > self.args.numItersForTrainExamplesHistory:
                 log.warning(
                     f"Removing the oldest entry in trainExamples. len(trainExamplesHistory) = {len(self.trainExamplesHistory)}")
-                self.trainExamplesHistory.pop(0)
+                for _ in range(history_len - self.args.numItersForTrainExamplesHistory):
+                    self.trainExamplesHistory.pop(0)
             # backup history to a file
             # NB! the examples were collected using the model from the previous iteration, so (i-1)  
             self.saveTrainExamples(i - 1)
