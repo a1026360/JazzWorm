@@ -8,6 +8,9 @@ Paul Puntschart
 Bauernschach:
 Rnd vs Rnd: 50w, 45l, 5d
 NN vs Rnd: (91, 3, 6)
+NN vs Stockfish13-Depth=1: (6, 1, 3)
+NN vs Stockfish13-Depth=2: (25, 5, 0)
+NN vs Stockfish13-Depth=3: (7, 17, 7)
 
 # Important for GPU support
 May use env var 2 boost tf gpu:
