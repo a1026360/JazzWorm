@@ -26,7 +26,7 @@ args = TrainingConfig({
     'cpuct': 1,
 
     'checkpoint': './jazz/',
-    'load_model': False,
+    'load_model': True,
     'load_folder_file': ('./jazz', 'best.h5'),
     'numItersForTrainExamplesHistory': 32,
 

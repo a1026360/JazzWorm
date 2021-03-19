@@ -14,7 +14,7 @@ args = TrainingConfig({
     'lr': 0.002,
     'dropout': 0.2,
     'epochs': 14,
-    'batch_size': 64,
+    'batch_size': 8,
     'cuda': True,
     'num_channels': 256,
 })

@@ -49,7 +49,7 @@ class ChessGame(Game):
         fen = board_to_fen(board_array)
         board = chess.Board(fen)
         if board.is_game_over():
-            return board, -player
+            return board_array, -player
         try:
             board.push(chess.Move.from_uci(uci_strings[action]))
         except AssertionError as ae:
@@ -78,9 +78,12 @@ class ChessGame(Game):
 
         result = board.result()
         if result[0] == "*":
-            return 0
+            board.turn = False
+            if board.result()[0] == "*":
+                return 0
         elif result[1] == "/":
             return 1e-4  # return a low number for draws
+
         return -1
 
     def getCanonicalForm(self, board, player):

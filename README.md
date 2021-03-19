@@ -4,7 +4,12 @@ An artificial intelligent chess engine, inspired by Paul Puntschart.
 ## Author
 Paul Puntschart
 
-# Test
+# Results
+Bauernschach:
+Rnd vs Rnd: 50w, 45l, 5d
+NN vs Rnd: (91, 3, 6)
+
+# Important for GPU support
 May use env var 2 boost tf gpu:
 Variables name = TF_XLA_FLAGS
 Variables value = --tf_xla_enable_xla_devices

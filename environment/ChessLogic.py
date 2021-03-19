@@ -76,62 +76,64 @@ def board_to_array(chess_board: chess.Board):
 
     if chess_board.is_en_passant(chess.Move.from_uci("a5b6")):
         board[2, 1] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("b5a6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("b5a6")):
         board[2, 0] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("b5c6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("b5c6")):
         board[2, 2] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("c5b6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("c5b6")):
         board[2, 1] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("c5d6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("c5d6")):
         board[2, 3] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("d5c6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("d5c6")):
         board[2, 2] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("d5e6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("d5e6")):
         board[2, 4] = str_int_mapping["E"]
-    if chess_board.is_en_passant(chess.Move.from_uci("e5d6")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("e5d6")):
         board[2, 3] = str_int_mapping["E"]
-
-    if chess_board.is_en_passant(chess.Move.from_uci("a4b3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("a4b3")):
         board[5, 1] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("b4a3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("b4a3")):
         board[5, 0] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("b4c3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("b4c3")):
         board[5, 2] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("c4b3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("c4b3")):
         board[5, 1] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("c4d3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("c4d3")):
         board[5, 3] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("d4c3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("d4c3")):
         board[5, 2] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("d4e3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("d4e3")):
         board[5, 4] = str_int_mapping["e"]
-    if chess_board.is_en_passant(chess.Move.from_uci("e4d3")):
+    elif chess_board.is_en_passant(chess.Move.from_uci("e4d3")):
         board[5, 3] = str_int_mapping["e"]
     return board
 
 
 def board_to_fen(board):
     en_passat = "-"
-    if board[2, 0] == str_int_mapping["E"]:
-        en_passat = "a6"
-    elif board[2, 1] == str_int_mapping["E"]:
-        en_passat = "b6"
-    elif board[2, 2] == str_int_mapping["E"]:
-        en_passat = "c6"
-    elif board[2, 3] == str_int_mapping["E"]:
-        en_passat = "d6"
-    elif board[2, 4] == str_int_mapping["E"]:
-        en_passat = "e6"
-    elif board[5, 0] == str_int_mapping["e"]:
-        en_passat = "a6"
-    elif board[5, 1] == str_int_mapping["e"]:
-        en_passat = "b6"
-    elif board[5, 2] == str_int_mapping["e"]:
-        en_passat = "c6"
-    elif board[5, 3] == str_int_mapping["e"]:
-        en_passat = "d6"
-    elif board[5, 4] == str_int_mapping["e"]:
-        en_passat = "e6"
+    try:
+        if board[2, 0] == str_int_mapping["E"]:
+            en_passat = "a6"
+        elif board[2, 1] == str_int_mapping["E"]:
+            en_passat = "b6"
+        elif board[2, 2] == str_int_mapping["E"]:
+            en_passat = "c6"
+        elif board[2, 3] == str_int_mapping["E"]:
+            en_passat = "d6"
+        elif board[2, 4] == str_int_mapping["E"]:
+            en_passat = "e6"
+        elif board[5, 0] == str_int_mapping["e"]:
+            en_passat = "a6"
+        elif board[5, 1] == str_int_mapping["e"]:
+            en_passat = "b6"
+        elif board[5, 2] == str_int_mapping["e"]:
+            en_passat = "c6"
+        elif board[5, 3] == str_int_mapping["e"]:
+            en_passat = "d6"
+        elif board[5, 4] == str_int_mapping["e"]:
+            en_passat = "e6"
+    except TypeError as te:
+        raise te
 
     with io.StringIO() as s:
         for row in board:
