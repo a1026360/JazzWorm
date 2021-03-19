@@ -20,7 +20,7 @@ coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
 class ChessGame(Game):
     def __init__(self):
-        self.size = [8, 8]
+        self.size = [9, 8]
         self.action_size = len(uci_strings)
 
         # "8/1q3R2/4Q3/1k6/8/8/4RK2/8 w - - 6 4" for CM in 4#
@@ -32,7 +32,8 @@ class ChessGame(Game):
         # "6R1/3P4/1K2N2p/7k/8/2r5/rp6/8 w - - 4 46"
         # self.start_fen = chess.Board().fen()
         #self.start_fen = "7k/6pP/pppp2P1/8/8/PPPP2p1/6Pp/7K w - - 0 1"
-        self.start_fen = "7k/ppppp1pP/6P1/8/8/6p1/PPPPP1Pp/7K w - - 0 1"
+        #self.start_fen = "7k/ppppp1pP/6P1/8/8/6p1/PPPPP1Pp/7K w - - 0 1"
+        self.start_fen = chess.Board().fen()
 
     def getInitBoard(self) -> Tuple[Any, chess.Board]:
         board = chess.Board(self.start_fen)
@@ -71,11 +72,6 @@ class ChessGame(Game):
         fen = board_to_fen(board)
         board = chess.Board(fen)
 
-        board_str = str(board)
-        for key in pawn_chess_ending_mapping.keys():
-            if key in board_str:
-                return -1
-
         result = board.result()
         if result[0] == "*":
             board.turn = False
@@ -89,9 +85,15 @@ class ChessGame(Game):
     def getCanonicalForm(self, board, player):
         if player == 1:
             return board
-        mirrored_board = board * player
+        board = board.copy()
+        mirrored_board = board[:-1, :] * player
         flipped_mirrored_borad = np.flip(mirrored_board, axis=0)
-        return flipped_mirrored_borad
+        board[:-1, :] = flipped_mirrored_borad
+        b_castle = board[8, 5:7].copy()
+        board[8, 5:7] = board[8, 3:5].copy()
+        board[8, 3:5] = b_castle
+        board[8, 0] = 1
+        return board
 
     def getSymmetries(self, board, pi):
         return [(board, pi)]

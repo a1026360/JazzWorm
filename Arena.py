@@ -3,7 +3,7 @@ import logging
 from tqdm import tqdm
 
 from chess import Board
-from environment.ChessLogic import uci_strings, board_to_fen, side_mapping
+from environment.ChessLogic import uci_strings, board_to_fen, flip_number_mapping
 
 log = logging.getLogger(__name__)
 
@@ -45,15 +45,17 @@ class Arena:
         board, chess_board = self.game.getInitBoard()
         it = 0
         move_strings = ""
+
         while self.game.getGameEnded(board, curPlayer) == 0:
             it += 1
             if verbose:
                 assert self.display
                 print("Turn ", str(it), "Player ", str(curPlayer))
                 self.display(board)
-            action = players[curPlayer + 1](self.game.getCanonicalForm(board, curPlayer))
+            canonical_board = self.game.getCanonicalForm(board, curPlayer)
+            action = players[curPlayer + 1](canonical_board)
 
-            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), 1)
+            valids = self.game.getValidMoves(canonical_board, 1)
 
             if valids[action] == 0:
                 log.error(f'Action {action} is not valid!')
@@ -61,8 +63,8 @@ class Arena:
                 assert valids[action] > 0
             uci_move = uci_strings[action]
             if curPlayer != 1:
-                uci_move = uci_move[0] + side_mapping[uci_move[1]] \
-                           + uci_move[2] + side_mapping[uci_move[3]] + uci_move[4:]
+                uci_move = uci_move[0] + flip_number_mapping[uci_move[1]] \
+                           + uci_move[2] + flip_number_mapping[uci_move[3]] + uci_move[4:]
             san = chess_board.san(chess_board.parse_san(uci_move))
             chess_board.push_uci(uci_move)
             move_strings += str(san) + " "

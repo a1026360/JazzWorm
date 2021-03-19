@@ -11,7 +11,7 @@ from .ChessNNet import ChessNNet as onnet
 sys.path.append('..')
 
 args = TrainingConfig({
-    'lr': 0.002,
+    'lr': 0.01,
     'dropout': 0.2,
     'epochs': 14,
     'batch_size': 8,
@@ -41,7 +41,7 @@ class NNetWrapper(NeuralNet):
         board: np array with board
         """
         # timing
-        # start = time.time()
+        #start = time.time()
 
         # preparing input
         board = board[np.newaxis, :, :]
@@ -49,7 +49,7 @@ class NNetWrapper(NeuralNet):
         # run
         pi, v = self.nnet.model.predict(board)
 
-        # print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
+        #print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
         return pi[0], v[0]
 
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.h5'):

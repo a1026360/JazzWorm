@@ -13,13 +13,15 @@ any agent.
 """
 
 human_vs_nn = False
-rnd_vs_nn = True
+rnd_vs_nn = False
+sf_vs_nn = True
 
 g = ChessGame()
 
 # all players
 rp = RandomPlayer(g).play
 hp = HumanChessPlayer(g).play
+sf = StockfishChessPlayer(g).play
 
 # nnet players
 n1 = NNet(g)
@@ -29,12 +31,15 @@ mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
 # make p1 random player to test:
-# n1p = RandomPlayer(g).play
+#n1p = RandomPlayer(g).play
+#n1p = sf
 
 if human_vs_nn:
     player2 = hp
 elif rnd_vs_nn:
     player2 = rp
+elif sf_vs_nn:
+    player2 = sf
 else:
     n2 = NNet(g)
     n2.load_checkpoint('./jazz/', 'best.h5')
@@ -46,4 +51,4 @@ else:
 
 arena = Arena.Arena(n1p, player2, g, display=ChessGame.display)
 
-print(arena.playGames(6, verbose=False))
+print(arena.playGames(20, verbose=False))
