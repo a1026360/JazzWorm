@@ -3,7 +3,7 @@ import logging
 from tqdm import tqdm
 
 from chess import Board
-from environment.ChessLogic import uci_strings, board_to_fen
+from environment.ChessLogic import uci_strings, board_to_fen, side_mapping
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +60,9 @@ class Arena:
                 log.debug(f'valids = {valids}')
                 assert valids[action] > 0
             uci_move = uci_strings[action]
+            if curPlayer != 1:
+                uci_move = uci_move[0] + side_mapping[uci_move[1]] \
+                           + uci_move[2] + side_mapping[uci_move[3]] + uci_move[4:]
             san = chess_board.san(chess_board.parse_san(uci_move))
             chess_board.push_uci(uci_move)
             move_strings += str(san) + " "
@@ -72,7 +75,7 @@ class Arena:
         board = Board(board_to_fen(board))
         print(f"\n[Variant \"From Position\"]\n[FEN \"{self.game.start_fen}\"]")
         print(f"\n{move_strings}")
-        print(f"reward: {reward}")
+        print(f"reward: {reward} - moves: {len(move_strings.split(' '))}")
         print(f"{board}\n")
 
         return reward

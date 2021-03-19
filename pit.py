@@ -37,7 +37,7 @@ elif rnd_vs_nn:
     player2 = rp
 else:
     n2 = NNet(g)
-    n2.load_checkpoint('./jazz/', 'checkpoint.h5')
+    n2.load_checkpoint('./jazz/', 'best.h5')
     args2 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
     mcts2 = MCTS(g, n2, args2)
     n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))

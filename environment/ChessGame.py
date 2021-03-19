@@ -6,7 +6,7 @@ import numpy as np
 
 import chess
 from Game import Game
-from .ChessLogic import board_to_array, board_to_fen, uci_strings, pawn_chess_ending_mapping, figure_value_mapping
+from .ChessLogic import board_to_array, board_to_fen, uci_strings, pawn_chess_ending_mapping
 import logging
 import coloredlogs
 
@@ -20,8 +20,8 @@ coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
 class ChessGame(Game):
     def __init__(self):
-        self.size = [9, 8]
-        self.action_size = 1968
+        self.size = [8, 8]
+        self.action_size = len(uci_strings)
 
         # "8/1q3R2/4Q3/1k6/8/8/4RK2/8 w - - 6 4" for CM in 4#
         # "8/1RR5/4Q3/8/8/3k4/5K2/8 w - - 3 7"
@@ -32,7 +32,7 @@ class ChessGame(Game):
         # "6R1/3P4/1K2N2p/7k/8/2r5/rp6/8 w - - 4 46"
         # self.start_fen = chess.Board().fen()
         #self.start_fen = "7k/6pP/pppp2P1/8/8/PPPP2p1/6Pp/7K w - - 0 1"
-        self.start_fen = chess.Board().fen()
+        self.start_fen = "7k/ppppp1pP/6P1/8/8/6p1/PPPPP1Pp/7K w - - 0 1"
 
     def getInitBoard(self) -> Tuple[Any, chess.Board]:
         board = chess.Board(self.start_fen)
@@ -45,6 +45,7 @@ class ChessGame(Game):
         return self.action_size
 
     def getNextState(self, board_array, player, action):
+        board_array = self.getCanonicalForm(board_array, player)
         fen = board_to_fen(board_array)
         board = chess.Board(fen)
         if board.is_game_over():
@@ -54,6 +55,7 @@ class ChessGame(Game):
         except AssertionError as ae:
             raise ae
         board_array = board_to_array(board)
+        board_array = self.getCanonicalForm(board_array, player)
         return board_array, -player
 
     def getValidMoves(self, board, player):
@@ -66,28 +68,32 @@ class ChessGame(Game):
 
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
-        # move_number = int(board[8, 1])
         fen = board_to_fen(board)
         board = chess.Board(fen)
-        real_player = 1 if board.turn else -1
 
-        result = board.result(claim_draw=True)
+        board_str = str(board)
+        for key in pawn_chess_ending_mapping.keys():
+            if key in board_str:
+                return -1
+
+        result = board.result()
         if result[0] == "*":
-            # if move_number > 200:
-            #    return 1e-4 * real_player
             return 0
         elif result[1] == "/":
-            return 1e-4 * real_player  # return a low number for draws
+            return 1e-4  # return a low number for draws
         return -1
 
     def getCanonicalForm(self, board, player):
-        return board
+        if player == 1:
+            return board
+        mirrored_board = board * player
+        flipped_mirrored_borad = np.flip(mirrored_board, axis=0)
+        return flipped_mirrored_borad
 
     def getSymmetries(self, board, pi):
         return [(board, pi)]
 
     def stringRepresentation(self, board):
-        # 8x8 numpy array (canonical board)
         return board.tostring()
 
     @staticmethod
