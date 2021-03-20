@@ -13,8 +13,8 @@ any agent.
 """
 
 human_vs_nn = False
-rnd_vs_nn = False
-sf_vs_nn = True
+rnd_vs_nn = True
+sf_vs_nn = False
 
 g = ChessGame()
 
@@ -26,7 +26,7 @@ sf = StockfishChessPlayer(g).play
 # nnet players
 n1 = NNet(g)
 n1.load_checkpoint('./jazz/', 'best.h5')
-args1 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
+args1 = TrainingConfig({'numMCTSSims': 16, 'cpuct': 1.0})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -51,4 +51,4 @@ else:
 
 arena = Arena.Arena(n1p, player2, g, display=ChessGame.display)
 
-print(arena.playGames(20, verbose=False))
+print(arena.playGames(6, verbose=False))
