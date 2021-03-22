@@ -67,13 +67,15 @@ class ChessGame(Game):
             valid_actions[uci_strings.index(str(move))] = 1
         return valid_actions
 
-    def getGameEnded(self, board, player):
+    def getGameEnded(self, board_array, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
-        fen = board_to_fen(board)
+        fen = board_to_fen(board_array)
         board = chess.Board(fen)
 
         result = board.result()
         if result[0] == "*":
+            if board_array[8, 2] > 100:
+                return -1e-4
             board.turn = False
             if board.result()[0] == "*":
                 return 0

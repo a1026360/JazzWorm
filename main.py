@@ -12,23 +12,23 @@ np.random.seed(1408)
 
 log = logging.getLogger(__name__)
 
-coloredlogs.install(level='DEBUG')  # INFO or other levels. Change this to DEBUG to see more info.
+coloredlogs.install(level='INFO')  # INFO or other levels. Change this to DEBUG to see more info.
 
 args = TrainingConfig({
     'numIters': 100,
-    'numEps': 1,              # Number of complete self-play games to simulate during a new iteration.
+    'numEps': 6,              # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.51,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-    'numMCTSSims': 16,          # Number of games moves for MCTS to simulate.
-    'arenaCompare': 4,         # Number of games to play during arena play to determine if new net will be accepted.
+    'numMCTSSims': 24,          # Number of games moves for MCTS to simulate.
+    'arenaCompare': 8,         # Number of games to play during arena play to determine if new net will be accepted.
     'arenaVerbose': False,         # Show games during arena play.
     'cpuct': 1,
 
     'checkpoint': './jazz/',
     'load_model': True,
     'load_folder_file': ('./jazz', 'best.h5'),
-    'numItersForTrainExamplesHistory': 64,
+    'numItersForTrainExamplesHistory': 24,
 
 })
 

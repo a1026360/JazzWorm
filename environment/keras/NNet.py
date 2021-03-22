@@ -11,10 +11,10 @@ from .ChessNNet import ChessNNet as onnet
 sys.path.append('..')
 
 args = TrainingConfig({
-    'lr': 0.01,
+    'lr': 0.005,
     'dropout': 0.2,
     'epochs': 14,
-    'batch_size': 8,
+    'batch_size': 16,
     'cuda': True,
     'num_channels': 256,
 })
