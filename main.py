@@ -3,8 +3,8 @@ import logging
 import coloredlogs
 
 from Coach import Coach
-from environment.ChessGame import ChessGame
-from environment.keras.NNet import NNetWrapper as nn
+from sim.SimGame import SimGame
+from sim.keras.NNet import NNetWrapper as nn
 from utils import *
 import numpy as np
 
@@ -16,26 +16,26 @@ coloredlogs.install(level='DEBUG')  # INFO or other levels. Change this to DEBUG
 
 args = TrainingConfig({
     'numIters': 100,
-    'numEps': 8,              # Number of complete self-play games to simulate during a new iteration.
+    'numEps': 12,              # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.51,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
     'numMCTSSims': 25,          # Number of games moves for MCTS to simulate.
-    'arenaCompare': 6,         # Number of games to play during arena play to determine if new net will be accepted.
+    'arenaCompare': 12,         # Number of games to play during arena play to determine if new net will be accepted.
     'arenaVerbose': False,         # Show games during arena play.
     'cpuct': 1,
 
-    'checkpoint': './jazz/',
-    'load_model': True,
-    'load_folder_file': ('./jazz', 'best.h5'),
-    'numItersForTrainExamplesHistory': 32,
+    'checkpoint': './sim_models/',
+    'load_model': False,
+    'load_folder_file': ('./sim_models', 'best.h5'),
+    'numItersForTrainExamplesHistory': 36,
 
 })
 
 
 def main():
-    log.info('Loading %s...', ChessGame.__name__)
-    g = ChessGame()
+    log.info('Loading %s...', SimGame.__name__)
+    g = SimGame()
 
     log.info('Loading %s...', nn.__name__)
     nnet = nn(g)

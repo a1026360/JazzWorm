@@ -10,12 +10,12 @@ from tqdm import tqdm
 
 from Arena import Arena
 from MCTS import MCTS
-from environment.ChessGame import ChessGame
+from sim.SimGame import SimGame
 
 log = logging.getLogger(__name__)
 
 
-class Coach():
+class Coach:
     """
     This class executes the self-play + learning. It uses the functions defined
     in Game and NeuralNet. args are specified in main.py.
@@ -47,7 +47,7 @@ class Coach():
                            the player eventually won the game, else -1.
         """
         trainExamples = []
-        board, chess_board = self.game.getInitBoard()
+        board = self.game.getInitBoard()
         self.curPlayer = 1
         episodeStep = 0
 
@@ -95,8 +95,7 @@ class Coach():
             if history_len > self.args.numItersForTrainExamplesHistory:
                 log.warning(
                     f"Removing the oldest entry in trainExamples. len(trainExamplesHistory) = {len(self.trainExamplesHistory)}")
-                for _ in range(history_len - self.args.numItersForTrainExamplesHistory):
-                    self.trainExamplesHistory.pop(0)
+                self.trainExamplesHistory.pop(0)
             # backup history to a file
             # NB! the examples were collected using the model from the previous iteration, so (i-1)  
             self.saveTrainExamples(i - 1)
@@ -117,7 +116,7 @@ class Coach():
 
             log.info('PITTING AGAINST PREVIOUS VERSION')
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
-                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game, display=ChessGame.display)
+                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game, display=SimGame.display)
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare, self.args.arenaVerbose)
 
             log.info('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
