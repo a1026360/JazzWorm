@@ -10,4 +10,6 @@ Arena.playGames (2): 100%|██████████| 500000/500000 [07:16<0
 
 Training for 1h:
 
-checkpoint_24 was able to beat the RandomPlayer 94 - 6.
+* checkpoint_24 was able to beat the RandomPlayer 94 - 6.
+* checkpoint_4 (trained for 10 min) was able to beat the RandomPlayer 99 - 1, but loses 7 - 17 vs checkpoint_24.
+* checkpoint_1 (second generation) was able to beat the RandomPlayer 46 - 4.
