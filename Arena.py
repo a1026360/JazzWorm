@@ -86,6 +86,11 @@ class Arena:
             else:
                 draws += 1
 
+        oneWon_fisrt_half = oneWon
+        twoWon_fisrt_half = twoWon
+        total_games_first_half = oneWon_fisrt_half + twoWon_fisrt_half
+        print(f"\nPlayer1 begins ({total_games_first_half} games): ( {oneWon}, {twoWon}, "
+              f"{round(oneWon / total_games_first_half * 100)}% )\n")
         self.player1, self.player2 = self.player2, self.player1
 
         for _ in tqdm(range(num), desc="Arena.playGames (2)"):
@@ -96,5 +101,13 @@ class Arena:
                 twoWon += 1
             else:
                 draws += 1
+
+        oneWon_second_half = oneWon - oneWon_fisrt_half
+        twoWon_second_half = twoWon - twoWon_fisrt_half
+        total_games_second_half = oneWon_second_half + twoWon_second_half
+        print(f"\nPlayer2 begins ({total_games_second_half} games): ( "
+              f"{oneWon_second_half}, "
+              f"{twoWon_second_half}, "
+              f"{round(oneWon_second_half / total_games_second_half * 100)}% )")
 
         return oneWon, twoWon, draws

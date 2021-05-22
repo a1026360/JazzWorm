@@ -7,43 +7,56 @@ from sim.SimPlayers import *
 import numpy as np
 from utils import *
 
-"""
-use this script to play any two agents against each other, or play manually with
-any agent.
-"""
+nr_of_games_to_play = 100
+verbosity = False
 
-human_vs_nn = False
-rnd_vs_nn = True
+# Player 1 - default: NN
+nn_p1 = 'checkpoint_1.h5'
+alg_vs = False
+random_vs = False
 
-g = SimGame()
+# Player 2 - default: NN
+nn_p2 = 'best.h5'
+vs_human = False
+vs_random = False
+vs_alg = True
+
+game = SimGame()
 
 # all players
-rp = RandomPlayer(g).play
-hp = HumanSimPlayer(g).play
+rp_1 = RandomPlayer(game).play
+rp_2 = RandomPlayer(game).play
+hp = HumanSimPlayer(game).play
+ap_1 = AlgoSimPlayer(game).play
+ap_2 = AlgoSimPlayer(game).play
 
-# nnet players
-n1 = NNet(g)
-n1.load_checkpoint('./sim_models/', 'checkpoint_4.h5')
-args1 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
-mcts1 = MCTS(g, n1, args1)
-n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
-
-# make p1 random player to test:
-#n1p = RandomPlayer(g).play
-
-if human_vs_nn:
-    player2 = hp
-elif rnd_vs_nn:
-    player2 = rp
+# setup player1
+if alg_vs:
+    player1 = ap_1
+elif random_vs:
+    player1 = rp_1
 else:
-    n2 = NNet(g)
-    n2.load_checkpoint('./sim_models/', 'best.h5')
+    n1 = NNet(game)
+    n1.load_checkpoint('./sim_models/', nn_p1)
+    args1 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
+    mcts1 = MCTS(game, n1, args1)
+    player1 = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
+
+# setup player2
+if vs_human:
+    player2 = hp
+elif vs_random:
+    player2 = rp_2
+elif vs_alg:
+    player2 = ap_2
+else:
+    n2 = NNet(game)
+    n2.load_checkpoint('./sim_models/', nn_p2)
     args2 = TrainingConfig({'numMCTSSims': 25, 'cpuct': 1.0})
-    mcts2 = MCTS(g, n2, args2)
-    n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
+    mcts2 = MCTS(game, n2, args2)
+    player2 = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
-    player2 = n2p  # Player 2 is neural network if it's cpu vs cpu.
-
-arena = Arena.Arena(n1p, player2, g, display=SimGame.display)
-
-print(arena.playGames(100, verbose=False))
+arena = Arena.Arena(player1, player2, game, display=SimGame.display)
+oneWon, twoWon, draws = arena.playGames(nr_of_games_to_play, verbose=verbosity)
+print(f"\nPlayer1 vs Player2 (total of {nr_of_games_to_play} games): "
+      f"({oneWon}, {twoWon}, {round(oneWon/nr_of_games_to_play*100)}%)")

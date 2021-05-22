@@ -39,7 +39,7 @@ class SimGame(Game):
         # return number of actions
         return self.action_size + 1
 
-    def getNextState(self, board, player, action):
+    def getNextState(self, board, player: int, action: int):
         # if player takes action on board, return next (board,player)
         # action must be a valid move
         if action == self.getActionSize() - 1:
@@ -49,6 +49,9 @@ class SimGame(Game):
         move = self.action_index(action)
         b.execute_move(move, player)
         return b.pieces, -player
+
+    def action_int(self, x, y) -> int:
+        return int(self.map[x][y])
 
     def getValidMoves(self, board, player):
         # return a fixed size binary vector
@@ -60,7 +63,7 @@ class SimGame(Game):
             valids[-1] = 1
             return np.array(valids)
         for x, y in legalMoves:
-            valids[int(self.map[x][y])] = 1
+            valids[self.action_int(x, y)] = 1
         return np.array(valids)
 
     def getGameEnded(self, board, player):
