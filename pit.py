@@ -7,11 +7,11 @@ from sim.SimPlayers import *
 import numpy as np
 from utils import *
 
-nr_of_games_to_play = 100
+nr_of_games_to_play = 200
 verbosity = False
 
 # Player 1 - default: NN
-nn_p1 = 'checkpoint_1.h5'
+nn_p1 = 'best.h5'
 alg_vs = False
 random_vs = False
 
@@ -19,7 +19,7 @@ random_vs = False
 nn_p2 = 'best.h5'
 vs_human = False
 vs_random = False
-vs_alg = True
+vs_alg = False
 
 game = SimGame()
 

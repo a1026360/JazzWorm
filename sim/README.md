@@ -1,17 +1,158 @@
 # SIM and Alpha Zero General
 by Paul Puntschart, May 2021
 
+## Introduction
+Hy, my name is Paul and I love teaching my computer to learn all kind of games. 
+
+Over the last years, I already trained my computer to play "TicTacToe", 
+"Animal Chess" (also known as "Jungle" or "Dou Shou Qi"), "Chess", 
+"Paul's Bauernschach" (a self invented chess variation with only pawns) 
+and "The Catata Fish Game" (a self invented game), and then, one week ago, 
+I stumbled upon the pen and paper game "SIM". 
+
+SIM is so easy to explain and so easy to play that I 
+instantly fell in love with it. I programmed it on one evening in Python and let my computer play and learn it over night.
+
+My setup is the XMG Zenith Laptop with an Intel(R) Core(TM) i7-8700 
+CPU @ 3.20GHz CPU and the NVIDIA GeForce GTX 1080 GPU 
+(and yes, this crazy laptop has built in desktop-pc devices).
+
 ## Experiments
+I used this readme to write down all my findings. Have fun reading!
 
 ### Training Notes
-Following my training notes to some trained neural networks.
-* checkpoint numbers (e.g. checkpoint_14) are NOT linear to training durations, because I changed some training hyperparameters now and then. Details can still be reverse-engineered via the git commits.
+Following my training notes to some trained neural networks playing SIM.
+* checkpoint numbers (e.g. checkpoint_14) are NOT linear to training durations, because I changed some training hyperparameters now and then. Details could still be reverse-engineered via the git commits.
+* The player making the fist move is referred as "red", the other player as "blue".
+
+#### 11h Training
+After 11h of training, I got following results:
+
+* checkpoint_148 vs checkpoint_148:
+
+```
+# Run 1 (100 games):
+Arena.playGames (1): 100%| 32/32 [01:26<00:00,  2.70s/it]
+Arena.playGames (2): 100%| 32/32 [00:57<00:00,  1.81s/it]
+Arena.playGames (1): 100%| 18/18 [01:01<00:00,  3.44s/it]
+Arena.playGames (2): 100%| 18/18 [00:34<00:00,  1.93s/it]
+
+Player1 begins (50 games): ( 4, 46, 8% )
+Player2 begins (50 games): ( 47, 3, 94% )
+Player1 vs Player2 (total of 100 games): (51, 49, 51%)
+
+# Run 2 (100 games):
+Arena.playGames (1): 100%| 50/50 [01:58<00:00,  2.37s/it]
+Arena.playGames (2): 100%| 50/50 [01:10<00:00,  1.41s/it]
+
+Player1 begins (50 games): ( 2, 48, 4% )
+Player2 begins (50 games): ( 39, 11, 78% )
+Player1 vs Player2 (total of 100 games): (41, 59, 41%)
+```
+We can see that the NN is way better if playing as blue, with a win rate of 90% over 200 games.
+This means, the better the players are, the more likely it is that blue wins.
+I issued another 200 games to tighten this assumption:
+
+```
+Arena.playGames (1): 100%| 100/100 [03:07<00:00,  1.88s/it]
+Arena.playGames (2): 100%| 100/100 [00:59<00:00,  1.67it/s]
+
+Player1 begins (100 games): ( 12, 88, 12% )
+Player2 begins (100 games): ( 100, 0, 100% )
+Player1 vs Player2 (total of 200 games): (112, 88, 56%)
+```
+and yes, blue is again winning 94% on 200 games played.
+At this point I wondered how the much weaker checkpoint_1 model would perform,
+so I also issued 200 games with checkpoint_1 vs checkpoint_1:
+
+```
+Arena.playGames (1): 100%| 100/100 [09:09<00:00,  5.49s/it]
+Arena.playGames (2): 100%| 100/100 [07:34<00:00,  4.54s/it]
+
+Player1 begins (100 games): ( 46, 54, 46% )
+Player2 begins (100 games): ( 68, 32, 68% )
+Player1 vs Player2 (total of 200 games): (114, 86, 57%)
+```
+which shows a win rate of 61% for blue (so it is quite lower compared to checkpoint_148).
+
+
+* checkpoint_148 results vs AlgoPlayer:
+
+```
+Arena.playGames (1): 100%| 100/100 [05:11<00:00,  3.11s/it]
+Arena.playGames (2): 100%| 100/100 [02:30<00:00,  1.50s/it]
+
+Player1 begins (100 games): ( 90, 10, 90% )
+Player2 begins (100 games): ( 99, 1, 99% )
+Player1 vs Player2 (total of 200 games): (189, 11, 94%)
+
+
+Arena.playGames (1): 100%| 100/100 [05:14<00:00,  3.14s/it]
+Arena.playGames (2): 100%| 100/100 [02:23<00:00,  1.44s/it]
+
+Player1 begins (100 games): ( 89, 11, 89% )
+Player2 begins (100 games): ( 99, 1, 99% )
+Player1 vs Player2 (total of 200 games): (188, 12, 94%)
+
+
+Arena.playGames (1): 100%| 500/500 [19:57<00:00,  2.39s/it]
+Arena.playGames (2): 100%| 500/500 [05:08<00:00,  1.62it/s]
+
+Player1 begins (500 games): ( 454, 46, 91% )
+Player2 begins (500 games): ( 494, 6, 99% )
+Player1 vs Player2 (total of 1000 games): (948, 52, 95%)
+```
+so the total score for 1400 games is:
+* Playing as Player1 (700 games): ( 633, 67, 90%)
+* Playing as Player2 (700 games): ( 692, 8, 99%)
+* Player1 vs Player2 (total of 1400 games): (1325, 75, 95%)
+
+We can see that the NN is slightly better if playing as Player2.
+There is also a significant difference in the playing time (3.14s vs 1.44s).
+I played another 20 games to analyse the playing time and counts of turns played:
+
+```
+Game over: Turn  14 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  12 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  12 Result  1
+Game over: Turn  14 Result  1
+Game over: Turn  14 Result  1
+
+Game over: Turn  13 Result  -1
+Game over: Turn  15 Result  -1
+Game over: Turn  13 Result  -1
+Game over: Turn  13 Result  -1
+Game over: Turn  13 Result  -1
+Game over: Turn  13 Result  -1
+Game over: Turn  15 Result  -1
+Game over: Turn  13 Result  -1
+Game over: Turn  15 Result  -1
+Game over: Turn  15 Result  -1
+```
+this shows that if the NN plays as Player1, he normally needs 7 turns to win,<br>
+but as Player2, he normally only needs 5 turns. This is the reason why those games are played faster.
+
+* checkpoint_148 results vs RandomPlayer:
+
+```
+Arena.playGames (1): 100%| 50/50 [02:45<00:00,  3.31s/it]
+Arena.playGames (2): 100%| 50/50 [01:22<00:00,  1.65s/it]
+
+Player1 begins (50 games): ( 49, 1, 98% )
+Player2 begins (50 games): ( 50, 0, 100% )
+Player1 vs Player2 (total of 100 games): (99, 1, 99%)
+```
 
 
 #### 2h Training
 After 2h of training, I got following results:
 
-* checkpoint_30 results vs AlgoPlayer:
+* checkpoint_40 results vs AlgoPlayer:
 
 ```
 Arena.playGames (1): 100%| 100/100 [05:35<00:00,  3.35s/it]
