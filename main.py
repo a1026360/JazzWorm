@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')  # INFO or other levels. Change this to DEBUG to see more info.
 
 args = TrainingConfig({
-    'numIters': 200,
+    'numIters': 400,
     'numEps': 48,              # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.56,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
@@ -27,7 +27,7 @@ args = TrainingConfig({
 
     'checkpoint': './sim_models/',
     'load_model': True,
-    'load_folder_file': ('./sim_models', 'best.h5'),
+    'load_folder_file': ('./sim_models', 'checkpoint.h5'),
     'numItersForTrainExamplesHistory': 64,
 
 })

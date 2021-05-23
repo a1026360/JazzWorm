@@ -12,7 +12,7 @@ I stumbled upon the pen and paper game "SIM".
 
 SIM is so easy to explain and so easy to play that I 
 instantly fell in love with it. I programmed it on one evening in Python and 
-let my computer play and learn it over night.
+let my computer play and learn it overnight.
 
 My setup is the XMG Zenith Laptop with an Intel(R) Core(TM) i7-8700 
 CPU @ 3.20GHz CPU and the NVIDIA GeForce GTX 1080 GPU 
@@ -25,6 +25,20 @@ I used this readme to write down all my findings. Happy findings!
 Following my training notes to some trained neural networks playing SIM.
 * checkpoint numbers (e.g. checkpoint_14) are NOT linear to training durations, because I changed some training hyperparameters now and then. Details could still be reverse-engineered via the git commits.
 * The player making the fist move is referred as "red", the other player as "blue".
+
+#### 20h Training
+After 20h of training, I got following results:
+
+* checkpoint_226 vs AlgoPlayer:
+
+```
+Arena.playGames (1): 100%| 500/500 [19:41<00:00,  2.36s/it]
+Arena.playGames (2): 100%| 500/500 [03:50<00:00,  2.17it/s]
+
+Player1 begins (500 games): ( 449, 51, 90% )
+Player2 begins (500 games): ( 500, 0, 100% )
+Player1 vs Player2 (total of 1000 games): (949, 51, 95%)
+```
 
 #### 15h Training
 After 15h of training, I got following results:
